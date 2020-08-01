@@ -3,7 +3,6 @@
 package f64
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -37,7 +36,6 @@ func TestVec3(t *testing.T) {
 		t.Fatalf("within failed")
 	}
 	if absfloat64(NewVec3(2, 2, 2, 2).Mul(100).Unit().Mag()-1.0) > 1e-6 {
-		fmt.Println(NewVec3(2, 2, 2, 2).Mul(100).Unit().Mag())
 		t.Fatalf("unit mag failed")
 	}
 }
