@@ -9,6 +9,6 @@ Library of mathematical components and algorithms for Go, targeting cartesian sy
   * N dimensional (VecN) cartesian vector.
   * N dimensional string-keyed (VecS) vector (float64 only).
 * __Interpolation__ (float64)
-  * _2d Grid_ - Box, Linear, Hermite, MitchellNetravali, CatmullRom, BSpline, Gaussian, Lanczos, Hann, Hamming, Blackman, Bartlett, Welch, Cosine
-  * _Nd_ - Microsphere
+  * _2d Grid-Aligned_ - Box, Linear, Hermite, MitchellNetravali, CatmullRom, BSpline, Gaussian, Lanczos, Hann, Hamming, Blackman, Bartlett, Welch, Cosine
+  * _2d and Nd_ - Microsphere projection for 2d and Nd non-grid-aligned samples.
 
