@@ -9,25 +9,28 @@ import (
 	"testing"
 
 	"github.com/colinrgodsey/cartesius/f64"
+	"github.com/colinrgodsey/cartesius/f64/filters"
 )
 
-var testGridFilters = [...]GridFilter{
-	Box, Linear, Hermite, MitchellNetravali, CatmullRom, BSpline,
-	Gaussian, Lanczos, Hann, Hamming, Blackman, Bartlett, Welch, Cosine}
+var testGridFilters = [...]filters.GridFilter{
+	filters.Box, filters.Linear, filters.Hermite, filters.MitchellNetravali,
+	filters.CatmullRom, filters.BSpline, filters.Gaussian, filters.Lanczos,
+	filters.Hann, filters.Hamming, filters.Blackman, filters.Bartlett,
+	filters.Welch, filters.Cosine}
 
 func TestGrids(t *testing.T) {
 	const (
-		sampleSize = 30
-		imgFac     = 30 / 100.0
-		maxRMS     = 0.0702
+		sampleSize = 100.0
+		imgFac     = 100.0 / 30.0
+		maxRMS     = 0.065
 	)
 
 	var samples []Sample2D
-	sVals := getTestGreyImage(testImage100)
-	vVals := getTestGreyImage(testImage30)
+	sVals := getTestGreyImage(testImage30)
+	vVals := getTestGreyImage(testImage100)
 	for y, ys := range sVals {
 		for x, v := range ys {
-			s := Sample2D{f64.Vec2{float64(x) * imgFac, float64(y) * imgFac}, v}
+			s := Sample2D{f64.Vec2{(float64(x) + 0.5) * imgFac, (float64(y) + 0.5) * imgFac}, v}
 			samples = append(samples, s)
 		}
 	}
@@ -37,7 +40,7 @@ func TestGrids(t *testing.T) {
 		go func() {
 			for x := 0; x < sampleSize; x++ {
 				for y := 0; y < sampleSize; y++ {
-					positions <- f64.Vec2{float64(x), float64(y)}
+					positions <- f64.Vec2{float64(x) + 0.5, float64(y) + 0.5}
 				}
 			}
 			close(positions)
@@ -49,9 +52,8 @@ func TestGrids(t *testing.T) {
 		var sum, num float64
 		for sample := range interp.Multi(sampleChan()) {
 			valid := vVals[int(sample.Pos[1])][int(sample.Pos[0])]
-			err := valid - sample.Val
-
-			sum += err * err
+			e := valid - sample.Val
+			sum += e * e
 			num++
 		}
 		rms := math.Sqrt(sum / num)
@@ -64,7 +66,6 @@ func TestGrids(t *testing.T) {
 	for fidx, filter := range testGridFilters {
 		testInterp(Grid2D(samples, filter), fidx)
 	}
-
 	testInterp(MicroSphere2D(samples), "microsphere")
 }
 

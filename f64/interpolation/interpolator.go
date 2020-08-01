@@ -7,11 +7,15 @@ import (
 	"github.com/colinrgodsey/cartesius/f64"
 )
 
+// Sample2D holds a 2D interpolation sample with
+// value Val at position Pos.
 type Sample2D struct {
 	Pos f64.Vec2
 	Val float64
 }
 
+// Interpolator2D represents a specific interpolator generally
+// created from a set of samples and a specific algorithm.
 type Interpolator2D func(pos f64.Vec2) (float64, error)
 
 // Multi takes a channel of positions and returns a channel of results.

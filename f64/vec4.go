@@ -111,8 +111,8 @@ func (v Vec4) Unit() Vec4 {
 }
 
 // Get a slice of the underlying values
-func (v Vec4) Get() []float64 {
-	return v[:]
+func (v *Vec4) Get() []float64 {
+	return (*v)[:]
 }
 
 // Set vector values

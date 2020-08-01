@@ -1,4 +1,4 @@
-package interpolation
+package filters
 
 import "math"
 
@@ -12,8 +12,8 @@ import "math"
 var (
 	// Box filter (averaging pixels).
 	Box = GridFilter{
-		size: 0.5,
-		kernel: func(x float64) float64 {
+		Size: 0.5,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x <= 0.5 {
 				return 1.0
@@ -24,8 +24,8 @@ var (
 
 	// Linear filter.
 	Linear = GridFilter{
-		size: 1.0,
-		kernel: func(x float64) float64 {
+		Size: 1.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 1.0 {
 				return 1.0 - x
@@ -36,8 +36,8 @@ var (
 
 	// Hermite cubic spline filter (BC-spline; B=0; C=0).
 	Hermite = GridFilter{
-		size: 1.0,
-		kernel: func(x float64) float64 {
+		Size: 1.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 1.0 {
 				return bcspline(x, 0.0, 0.0)
@@ -48,8 +48,8 @@ var (
 
 	// MitchellNetravali is Mitchell-Netravali cubic filter (BC-spline; B=1/3; C=1/3).
 	MitchellNetravali = GridFilter{
-		size: 2.0,
-		kernel: func(x float64) float64 {
+		Size: 2.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 2.0 {
 				return bcspline(x, 1.0/3.0, 1.0/3.0)
@@ -60,8 +60,8 @@ var (
 
 	// CatmullRom is a Catmull-Rom - sharp cubic filter (BC-spline; B=0; C=0.5).
 	CatmullRom = GridFilter{
-		size: 2.0,
-		kernel: func(x float64) float64 {
+		Size: 2.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 2.0 {
 				return bcspline(x, 0.0, 0.5)
@@ -72,8 +72,8 @@ var (
 
 	// BSpline is a smooth cubic filter (BC-spline; B=1; C=0).
 	BSpline = GridFilter{
-		size: 2.0,
-		kernel: func(x float64) float64 {
+		Size: 2.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 2.0 {
 				return bcspline(x, 1.0, 0.0)
@@ -84,8 +84,8 @@ var (
 
 	// Gaussian is a Gaussian blurring filter.
 	Gaussian = GridFilter{
-		size: 2.0,
-		kernel: func(x float64) float64 {
+		Size: 2.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 2.0 {
 				return math.Exp(-2 * x * x)
@@ -96,8 +96,8 @@ var (
 
 	// Bartlett is a Bartlett-windowed sinc filter (3 lobes).
 	Bartlett = GridFilter{
-		size: 3.0,
-		kernel: func(x float64) float64 {
+		Size: 3.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 3.0 {
 				return sinc(x) * (3.0 - x) / 3.0
@@ -108,8 +108,8 @@ var (
 
 	// Lanczos filter (3 lobes).
 	Lanczos = GridFilter{
-		size: 3.0,
-		kernel: func(x float64) float64 {
+		Size: 3.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 3.0 {
 				return sinc(x) * sinc(x/3.0)
@@ -120,8 +120,8 @@ var (
 
 	// Hann is a Hann-windowed sinc filter (3 lobes).
 	Hann = GridFilter{
-		size: 3.0,
-		kernel: func(x float64) float64 {
+		Size: 3.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 3.0 {
 				return sinc(x) * (0.5 + 0.5*math.Cos(math.Pi*x/3.0))
@@ -132,8 +132,8 @@ var (
 
 	// Hamming is a Hamming-windowed sinc filter (3 lobes).
 	Hamming = GridFilter{
-		size: 3.0,
-		kernel: func(x float64) float64 {
+		Size: 3.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 3.0 {
 				return sinc(x) * (0.54 + 0.46*math.Cos(math.Pi*x/3.0))
@@ -144,8 +144,8 @@ var (
 
 	// Blackman is a Blackman-windowed sinc filter (3 lobes).
 	Blackman = GridFilter{
-		size: 3.0,
-		kernel: func(x float64) float64 {
+		Size: 3.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 3.0 {
 				return sinc(x) * (0.42 - 0.5*math.Cos(math.Pi*x/3.0+math.Pi) + 0.08*math.Cos(2.0*math.Pi*x/3.0))
@@ -156,8 +156,8 @@ var (
 
 	// Welch is a Welch-windowed sinc filter (parabolic window, 3 lobes).
 	Welch = GridFilter{
-		size: 3.0,
-		kernel: func(x float64) float64 {
+		Size: 3.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 3.0 {
 				return sinc(x) * (1.0 - (x * x / 9.0))
@@ -168,8 +168,8 @@ var (
 
 	// Cosine is a Cosine-windowed sinc filter (3 lobes).
 	Cosine = GridFilter{
-		size: 3.0,
-		kernel: func(x float64) float64 {
+		Size: 3.0,
+		Kernel: func(x float64) float64 {
 			x = math.Abs(x)
 			if x < 3.0 {
 				return sinc(x) * math.Cos((math.Pi/2.0)*(x/3.0))
@@ -182,13 +182,14 @@ var (
 // FilterKernel produces a weight for a certain unit-distance delta.
 type FilterKernel func(float64) float64
 
-// GridFilter defines the filter used for interpolating over grid values.
+// GridFilter defines the filter size and kernel
+// used for interpolating over grid values.
 type GridFilter struct {
-	size   float64
-	kernel FilterKernel
+	Size   float64
+	Kernel FilterKernel
 }
 
-// NewGridFilter creates a new GridFilter
+// NewGridFilter creates a new GridFilter.
 func NewGridFilter(support float64, kernel FilterKernel) GridFilter {
 	return GridFilter{support, kernel}
 }

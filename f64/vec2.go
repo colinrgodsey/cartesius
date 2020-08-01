@@ -111,8 +111,8 @@ func (v Vec2) Unit() Vec2 {
 }
 
 // Get a slice of the underlying values
-func (v Vec2) Get() []float64 {
-	return v[:]
+func (v *Vec2) Get() []float64 {
+	return (*v)[:]
 }
 
 // Set vector values

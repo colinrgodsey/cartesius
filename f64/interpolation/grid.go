@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/colinrgodsey/cartesius/f64"
+	"github.com/colinrgodsey/cartesius/f64/filters"
 )
 
 var (
@@ -19,7 +20,7 @@ var (
 )
 
 // Grid2D creates a 2D grid-based interpolator using the provided filter.
-func Grid2D(samples []Sample2D, filter GridFilter) Interpolator2D {
+func Grid2D(samples []Sample2D, filter filters.GridFilter) Interpolator2D {
 	stride, offs, max, values, err := makeGrid2d(samples)
 	if err != nil {
 		return func(pos f64.Vec2) (float64, error) {
@@ -29,7 +30,7 @@ func Grid2D(samples []Sample2D, filter GridFilter) Interpolator2D {
 	return func(pos f64.Vec2) (float64, error) {
 		var rPos [2]float64
 		for i, p := range pos {
-			if p < offs[i] || p > max[i]+stride[i] {
+			if p < offs[i] || p > max[i] {
 				return 0, ErrBadCoord
 			}
 			rPos[i] = (p - offs[i]) / stride[i]
@@ -41,7 +42,7 @@ func Grid2D(samples []Sample2D, filter GridFilter) Interpolator2D {
 }
 
 /* x should already be offset and scaled */
-func interp1d(values []float64, x float64, filter GridFilter) float64 {
+func interp1d(values []float64, x float64, filter filters.GridFilter) float64 {
 	low, high := filterRange(x, filter)
 
 	var weights, sum float64
@@ -49,7 +50,7 @@ func interp1d(values []float64, x float64, filter GridFilter) float64 {
 		if i < 0 || i >= len(values) {
 			continue
 		}
-		w := filter.kernel(x - float64(i))
+		w := filter.Kernel(x - float64(i))
 		weights += w
 		sum += values[i] * w
 	}
@@ -57,7 +58,7 @@ func interp1d(values []float64, x float64, filter GridFilter) float64 {
 }
 
 /* pos should already be offset and scaled */
-func interp2d(values [][]float64, pos f64.Vec2, filter GridFilter) float64 {
+func interp2d(values [][]float64, pos f64.Vec2, filter filters.GridFilter) float64 {
 	low, high := filterRange(pos[1], filter)
 
 	var weights, sum float64
@@ -65,7 +66,7 @@ func interp2d(values [][]float64, pos f64.Vec2, filter GridFilter) float64 {
 		if i < 0 || i >= len(values) {
 			continue
 		}
-		w := filter.kernel(pos[1] - float64(i))
+		w := filter.Kernel(pos[1] - float64(i))
 		weights += w
 		sum += interp1d(values[i], pos[0], filter) * w
 	}
@@ -120,9 +121,9 @@ func makeGrid2d(samples []Sample2D) (stride, offs, max [2]float64, values [][]fl
 	return
 }
 
-func filterRange(v float64, filter GridFilter) (low, high int) {
-	units := math.Ceil(filter.size)
-	low = int(math.Ceil(v - units))
-	high = int(math.Floor(v + units))
+func filterRange(v float64, filter filters.GridFilter) (low, high int) {
+	units := math.Ceil(filter.Size)
+	low = int(math.Floor(v - units))
+	high = int(math.Ceil(v + units))
 	return
 }

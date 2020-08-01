@@ -111,8 +111,8 @@ func (v VecN) Unit() VecN {
 }
 
 // Get a slice of the underlying values
-func (v VecN) Get() []float32 {
-	return v[:]
+func (v *VecN) Get() []float32 {
+	return (*v)[:]
 }
 
 // Set vector values
