@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/colinrgodsey/cartesius.svg?branch=master)](https://travis-ci.com/colinrgodsey/cartesius)
+[![GoDoc](https://godoc.org/github.com/colinrgodsey/cartesius?status.svg)](https://godoc.org/github.com/colinrgodsey/cartesius)
+
 # cartesius
 Library of mathematical components and algorithms for Go, targeting cartesian systems.
 
@@ -8,4 +11,3 @@ Library of mathematical components and algorithms for Go, targeting cartesian sy
   * _2d Grid_ - Box, Linear, Hermite, MitchellNetravali, CatmullRom, BSpline, Gaussian, Lanczos, Hann, Hamming, Blackman, Bartlett, Welch, Cosine
   * _Nd_ - Microsphere
 
-## [Documentation](https://godoc.org/github.com/colinrgodsey/cartesius)
