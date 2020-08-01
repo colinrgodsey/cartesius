@@ -1,3 +1,7 @@
+/* FILE WAS AUTO-GENERATED FROM f32/vecN */
+
+/* FILE WAS AUTO-GENERATED FROM f64/vecN */
+
 package f32
 
 var _ Vec = (*Vec4)(nil)
@@ -109,8 +113,8 @@ func (v Vec4) Unit() Vec4 {
 }
 
 // Get a slice of the underlying values
-func (v *Vec4) Get() []float32 {
-	return (*v)[:]
+func (v Vec4) Get() []float32 {
+	return v[:]
 }
 
 // Set vector values

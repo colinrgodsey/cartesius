@@ -18,6 +18,15 @@ type Vec3 [3]float64
 // Vec4 is a 4-dimentional float64 vector
 type Vec4 [4]float64
 
+// Cross returns the cross product of v and o (v x o)
+func (a Vec3) Cross(b Vec3) Vec3 {
+	return Vec3{
+		a[1]*b[2] - a[2]*b[1],
+		a[2]*b[0] - a[0]*b[2],
+		a[0]*b[1] - a[1]*b[0],
+	}
+}
+
 func initVecN(v *VecN, len int) {
 	if *v == nil {
 		*v = make([]float64, len)
