@@ -2,38 +2,11 @@
 
 package f64
 
-var _ Vec = (*Vec4)(nil)
-
-// NewVec4 creates a new Vec4 from the provided values.
-func NewVec4(vs ...float64) Vec4 {
-	out := Vec4{}
-	out.Set(vs...)
-	return out
-}
-
-// Add o to v
-func (v Vec4) Add(o Vec4) (res Vec4) {
-	initVec4(&res, len(v))
-	for i := range v {
-		res[i] = v[i] + o[i]
-	}
-	return
-}
-
 // Mul scales v by s
 func (v Vec4) Mul(s float64) (res Vec4) {
 	initVec4(&res, len(v))
 	for i := range v {
 		res[i] = v[i] * s
-	}
-	return
-}
-
-// MulV multiplies v*s per dim
-func (v Vec4) MulV(o Vec4) (res Vec4) {
-	initVec4(&res, len(v))
-	for i := range v {
-		res[i] = v[i] * o[i]
 	}
 	return
 }
@@ -64,8 +37,28 @@ func (v Vec4) Neg() Vec4 {
 
 // Inv returns the multiplicative inverse of v
 func (v Vec4) Inv() (res Vec4) {
+	initVec4(&res, len(v))
 	for i := range v {
 		res[i] = 1.0 / v[i]
+	}
+	return
+}
+
+// Add o to v
+func (v Vec4) Add(o Vec4) (res Vec4) {
+	initVec4(&res, len(v))
+	//TODO: this doesnt technically work for different size vecNs, or vecS
+	for i := range v {
+		res[i] = v[i] + o.At(i)
+	}
+	return
+}
+
+// MulV multiplies v*s per dim
+func (v Vec4) MulV(o Vec4) (res Vec4) {
+	initVec4(&res, len(v))
+	for i := range v {
+		res[i] = v[i] * o.At(i)
 	}
 	return
 }
@@ -73,7 +66,7 @@ func (v Vec4) Inv() (res Vec4) {
 // Dot returns the dot product of v and o (v⋅o)
 func (v Vec4) Dot(o Vec4) (d float64) {
 	for i := range v {
-		d += v[i] * o[i]
+		d += v[i] * o.At(i)
 	}
 	return
 }
@@ -84,7 +77,7 @@ func (v Vec4) Within(o Vec4) bool {
 	v = v.Abs()
 	o = o.Abs()
 	for i := range v {
-		if v[i] > o[i] {
+		if v[i] > o.At(i) {
 			return false
 		}
 	}
@@ -117,6 +110,25 @@ func (v Vec4) Unit() Vec4 {
 	return v.Div(d)
 }
 
+/* VECC_START */
+
+var _ VecC = (*Vec4)(nil)
+
+// NewVec4 creates a new Vec4 from the provided values.
+func NewVec4(vs ...float64) Vec4 {
+	out := Vec4{}
+	out.Set(vs...)
+	return out
+}
+
+// At returns the value at dimension dim.
+func (v *Vec4) At(dim int) float64 {
+	if dim >= len(*v) {
+		return 0
+	}
+	return (*v)[dim]
+}
+
 // Get a slice of the underlying values
 func (v *Vec4) Get() []float64 {
 	return (*v)[:]
@@ -132,3 +144,20 @@ func (v *Vec4) Set(vs ...float64) {
 		(*v)[i] = val
 	}
 }
+
+// Vec2 version of this vector.
+func (v *Vec4) Vec2() Vec2 {
+	return NewVec2((*v)[:]...)
+}
+
+// Vec3 version of this vector.
+func (v *Vec4) Vec3() Vec3 {
+	return NewVec3((*v)[:]...)
+}
+
+// Vec4 version of this vector.
+func (v *Vec4) Vec4() Vec4 {
+	return NewVec4((*v)[:]...)
+}
+
+/* VECC_END */

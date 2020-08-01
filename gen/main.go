@@ -13,15 +13,25 @@ var genList = []struct {
 	replace  rep
 }{
 	{"f64/vecN", "f32/vecN", rep{"f64": "f32", "float64": "float32"}},
+	{"f64/vecN_test", "f32/vecN_test", rep{"f64": "f32", "float64": "float32"}},
 	{"f64/base", "f32/base", rep{"f64": "f32", "float64": "float32"}},
 
 	{"f64/vecN", "f64/vec2", rep{"VecN": "Vec2"}},
 	{"f64/vecN", "f64/vec3", rep{"VecN": "Vec3"}},
 	{"f64/vecN", "f64/vec4", rep{"VecN": "Vec4"}},
+	{"f64/vecN", "f64/vecS", rep{"VecN": "VecS", "/* VECC_START */": "/*", "/* VECC_END */": "*/"}},
 
 	{"f32/vecN", "f32/vec2", rep{"VecN": "Vec2"}},
 	{"f32/vecN", "f32/vec3", rep{"VecN": "Vec3"}},
 	{"f32/vecN", "f32/vec4", rep{"VecN": "Vec4"}},
+
+	{"f64/vecN_test", "f64/vec2_test", rep{"VecN": "Vec2"}},
+	{"f64/vecN_test", "f64/vec3_test", rep{"VecN": "Vec3"}},
+	{"f64/vecN_test", "f64/vec4_test", rep{"VecN": "Vec4"}},
+
+	{"f32/vecN_test", "f32/vec2_test", rep{"VecN": "Vec2"}},
+	{"f32/vecN_test", "f32/vec3_test", rep{"VecN": "Vec3"}},
+	{"f32/vecN_test", "f32/vec4_test", rep{"VecN": "Vec4"}},
 }
 
 /* Generates the different vector classes */

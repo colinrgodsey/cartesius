@@ -1,9 +1,15 @@
 package f64
 
-// Vec provides a dimensionless interface for all vecs.
-type Vec interface {
+// VecC provides a dimensionless interface
+// for all cartesian vecs.
+type VecC interface {
+	At(dim int) float64
 	Get() []float64
 	Set(vs ...float64)
+	Vec2() Vec2
+	Vec3() Vec3
+	Vec4() Vec4
+	VecN() VecN
 }
 
 // VecN is an n-dimentional float64 vector
@@ -19,20 +25,40 @@ type Vec3 [3]float64
 type Vec4 [4]float64
 
 // Cross returns the cross product of v and o (v x o)
-func (a Vec3) Cross(b Vec3) Vec3 {
+func (v Vec3) Cross(b Vec3) Vec3 {
 	return Vec3{
-		a[1]*b[2] - a[2]*b[1],
-		a[2]*b[0] - a[0]*b[2],
-		a[0]*b[1] - a[1]*b[0],
+		v[1]*b[2] - v[2]*b[1],
+		v[2]*b[0] - v[0]*b[2],
+		v[0]*b[1] - v[1]*b[0],
 	}
 }
 
-func initVecN(v *VecN, len int) {
-	if *v == nil {
-		*v = make([]float64, len)
+// VecN version of this vector.
+func (v *Vec2) VecN() VecN {
+	return NewVecN((*v)[:]...)
+}
+
+// VecN version of this vector.
+func (v *Vec3) VecN() VecN {
+	return NewVecN((*v)[:]...)
+}
+
+// VecN version of this vector.
+func (v *Vec4) VecN() VecN {
+	return NewVecN((*v)[:]...)
+}
+
+// VecN version of this vector.
+func (v *VecN) VecN() VecN {
+	return NewVecN((*v)[:]...)
+}
+
+func initVecN(v *VecN, l int) {
+	if len(*v) == 0 {
+		*v = make([]float64, l)
 	}
 }
 
-func initVec2(v *Vec2, len int) {}
-func initVec3(v *Vec3, len int) {}
-func initVec4(v *Vec4, len int) {}
+func initVec2(v *Vec2, l int) {}
+func initVec3(v *Vec3, l int) {}
+func initVec4(v *Vec4, l int) {}

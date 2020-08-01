@@ -19,6 +19,7 @@ var (
 )
 
 // Grid2D creates a 2D grid-based interpolator using the provided filter.
+// The Z axis of the samples is the value that will be interpolated.
 func Grid2D(samples []Vec3, filter filters.GridFilter) Interpolator2D {
 	stride, offs, max, values, err := makeGrid2d(samples)
 	if err != nil {
@@ -78,7 +79,7 @@ func makeGrid2d(samples []Vec3) (stride, offs, max [2]float64, values [][]float6
 		return
 	}
 	for si, s := range samples {
-		for i, p := range s[:2] {
+		for i, p := range s.Vec2() {
 			if p > max[i] || si == 0 {
 				max[i] = p
 			}
@@ -90,7 +91,7 @@ func makeGrid2d(samples []Vec3) (stride, offs, max [2]float64, values [][]float6
 
 	var num [2]int
 	for _, s := range samples {
-		for i, p := range s[:2] {
+		for i, p := range s.Vec2() {
 			if p-offs[i] == 0 {
 				num[i]++
 			}
@@ -111,7 +112,7 @@ func makeGrid2d(samples []Vec3) (stride, offs, max [2]float64, values [][]float6
 	}
 	for _, s := range samples {
 		var idx [2]int
-		for i, p := range s[:2] {
+		for i, p := range s.Vec2() {
 			v := (p - offs[i]) / stride[i]
 			idx[i] = int(math.Round(v))
 		}

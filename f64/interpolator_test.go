@@ -15,9 +15,10 @@ var testGridFilters = [...]filters.GridFilter{
 	filters.Box, filters.Linear, filters.Hermite, filters.MitchellNetravali,
 	filters.CatmullRom, filters.BSpline, filters.Gaussian, filters.Lanczos,
 	filters.Hann, filters.Hamming, filters.Blackman, filters.Bartlett,
-	filters.Welch, filters.Cosine}
+	filters.Welch, filters.Cosine,
+}
 
-func TestGrids(t *testing.T) {
+func testInterp(interpGen func([]Vec3) Interpolator2D, filter interface{}, stride int) string {
 	const (
 		sampleSize = 100.0
 		imgFac     = 100.0 / 30.0
@@ -34,11 +35,13 @@ func TestGrids(t *testing.T) {
 		}
 	}
 
-	sampleChan := func() <-chan Vec2 {
+	interp := interpGen(samples)
+
+	sampleChan := func(stride int) <-chan Vec2 {
 		positions := make(chan Vec2, 32)
 		go func() {
-			for x := 0; x < sampleSize; x++ {
-				for y := 0; y < sampleSize; y++ {
+			for x := 0; x < sampleSize; x += stride {
+				for y := 0; y < sampleSize; y += stride {
 					positions <- Vec2{float64(x) + 0.5, float64(y) + 0.5}
 				}
 			}
@@ -47,25 +50,37 @@ func TestGrids(t *testing.T) {
 		return positions
 	}
 
-	testInterp := func(interp Interpolator2D, filter interface{}) {
-		var sum, num float64
-		for sample := range interp.Multi(sampleChan()) {
-			valid := vVals[int(sample[1])][int(sample[0])]
-			e := valid - sample[2]
-			sum += e * e
-			num++
-		}
-		rms := math.Sqrt(sum / num)
-		fmt.Printf("Filter: %v, RMS: %v\n", filter, rms)
-		if rms >= maxRMS {
-			t.Fatalf("RMS value %v exceeded max %v for filter %v", rms, maxRMS, filter)
-		}
+	var sum, num float64
+	for sample := range interp.Multi(sampleChan(stride)) {
+		valid := vVals[int(sample[1])][int(sample[0])]
+		e := valid - sample[2]
+		sum += e * e
+		num++
 	}
+	rms := math.Sqrt(sum / num)
+	fmt.Printf("Filter: %v, RMS: %v\n", filter, rms)
+	if rms >= maxRMS {
+		return fmt.Sprintf("RMS value %v exceeded max %v for filter %v", rms, maxRMS, filter)
+	}
+	return ""
+}
 
+func TestGrids(t *testing.T) {
 	for fidx, filter := range testGridFilters {
-		testInterp(Grid2D(samples, filter), fidx)
+		str := testInterp(func(samples []Vec3) Interpolator2D {
+			return Grid2D(samples, filter)
+		}, fidx, 1)
+		if len(str) > 0 {
+			t.Fatalf(str)
+		}
 	}
-	testInterp(MicroSphere2D(samples), "microsphere")
+}
+
+func TestMicrosphere(t *testing.T) {
+	str := testInterp(MicroSphere2D, "microsphere", 5)
+	if len(str) > 0 {
+		t.Fatalf(str)
+	}
 }
 
 //base64 jpg

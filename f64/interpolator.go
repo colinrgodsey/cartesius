@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-// Interpolator2D represents a specific interpolator generally
-// created from a set of samples and a specific algorithm.
+// Interpolator2D is an interpolation method created using
+// a set of samples and an interpolation algorithm.
 type Interpolator2D func(pos Vec2) (float64, error)
 
 // Multi takes a channel of positions and returns a channel of results.

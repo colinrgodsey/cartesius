@@ -3,8 +3,8 @@
 package f64
 
 // Mul scales v by s
-func (v Vec2) Mul(s float64) (res Vec2) {
-	initVec2(&res, len(v))
+func (v VecS) Mul(s float64) (res VecS) {
+	initVecS(&res, len(v))
 	for i := range v {
 		res[i] = v[i] * s
 	}
@@ -12,8 +12,8 @@ func (v Vec2) Mul(s float64) (res Vec2) {
 }
 
 // Abs returns the absolute value of v
-func (v Vec2) Abs() (res Vec2) {
-	initVec2(&res, len(v))
+func (v VecS) Abs() (res VecS) {
+	initVecS(&res, len(v))
 	for i := range v {
 		res[i] = absfloat64(v[i])
 	}
@@ -21,23 +21,23 @@ func (v Vec2) Abs() (res Vec2) {
 }
 
 // Sub o from v
-func (v Vec2) Sub(o Vec2) Vec2 {
+func (v VecS) Sub(o VecS) VecS {
 	return v.Add(o.Neg())
 }
 
 // Div scales v by the multiplicative inverse of s
-func (v Vec2) Div(s float64) Vec2 {
+func (v VecS) Div(s float64) VecS {
 	return v.Mul(1.0 / s)
 }
 
 // Neg returns the negative vector of v (-v)
-func (v Vec2) Neg() Vec2 {
+func (v VecS) Neg() VecS {
 	return v.Mul(-1.0)
 }
 
 // Inv returns the multiplicative inverse of v
-func (v Vec2) Inv() (res Vec2) {
-	initVec2(&res, len(v))
+func (v VecS) Inv() (res VecS) {
+	initVecS(&res, len(v))
 	for i := range v {
 		res[i] = 1.0 / v[i]
 	}
@@ -45,8 +45,8 @@ func (v Vec2) Inv() (res Vec2) {
 }
 
 // Add o to v
-func (v Vec2) Add(o Vec2) (res Vec2) {
-	initVec2(&res, len(v))
+func (v VecS) Add(o VecS) (res VecS) {
+	initVecS(&res, len(v))
 	//TODO: this doesnt technically work for different size vecNs, or vecS
 	for i := range v {
 		res[i] = v[i] + o.At(i)
@@ -55,8 +55,8 @@ func (v Vec2) Add(o Vec2) (res Vec2) {
 }
 
 // MulV multiplies v*s per dim
-func (v Vec2) MulV(o Vec2) (res Vec2) {
-	initVec2(&res, len(v))
+func (v VecS) MulV(o VecS) (res VecS) {
+	initVecS(&res, len(v))
 	for i := range v {
 		res[i] = v[i] * o.At(i)
 	}
@@ -64,7 +64,7 @@ func (v Vec2) MulV(o Vec2) (res Vec2) {
 }
 
 // Dot returns the dot product of v and o (v⋅o)
-func (v Vec2) Dot(o Vec2) (d float64) {
+func (v VecS) Dot(o VecS) (d float64) {
 	for i := range v {
 		d += v[i] * o.At(i)
 	}
@@ -73,7 +73,7 @@ func (v Vec2) Dot(o Vec2) (d float64) {
 
 // Within returns true if v is within the bounds of o
 // considering both values as their absolute.
-func (v Vec2) Within(o Vec2) bool {
+func (v VecS) Within(o VecS) bool {
 	v = v.Abs()
 	o = o.Abs()
 	for i := range v {
@@ -85,7 +85,7 @@ func (v Vec2) Within(o Vec2) bool {
 }
 
 // Eq returns true if v and o are equal
-func (v Vec2) Eq(o Vec2) bool {
+func (v VecS) Eq(o VecS) bool {
 	for i := range v {
 		if v[i] != o[i] {
 			return false
@@ -95,13 +95,13 @@ func (v Vec2) Eq(o Vec2) bool {
 }
 
 // Mag returns the L2 norm of v
-func (v Vec2) Mag() float64 {
+func (v VecS) Mag() float64 {
 	return sqrtfloat64(v.Dot(v))
 }
 
 // Unit returns the (l2) normalized vector of v
 // or the zero vector if v is zero.
-func (v Vec2) Unit() Vec2 {
+func (v VecS) Unit() VecS {
 	d := v.Mag()
 	switch d {
 	case 1, 0:
@@ -110,19 +110,19 @@ func (v Vec2) Unit() Vec2 {
 	return v.Div(d)
 }
 
-/* VECC_START */
+/*
 
-var _ VecC = (*Vec2)(nil)
+var _ VecC = (*VecS)(nil)
 
-// NewVec2 creates a new Vec2 from the provided values.
-func NewVec2(vs ...float64) Vec2 {
-	out := Vec2{}
+// NewVecS creates a new VecS from the provided values.
+func NewVecS(vs ...float64) VecS {
+	out := VecS{}
 	out.Set(vs...)
 	return out
 }
 
 // At returns the value at dimension dim.
-func (v *Vec2) At(dim int) float64 {
+func (v *VecS) At(dim int) float64 {
 	if dim >= len(*v) {
 		return 0
 	}
@@ -130,13 +130,13 @@ func (v *Vec2) At(dim int) float64 {
 }
 
 // Get a slice of the underlying values
-func (v *Vec2) Get() []float64 {
+func (v *VecS) Get() []float64 {
 	return (*v)[:]
 }
 
 // Set vector values
-func (v *Vec2) Set(vs ...float64) {
-	initVec2(v, len(vs))
+func (v *VecS) Set(vs ...float64) {
+	initVecS(v, len(vs))
 	for i, val := range vs {
 		if i >= len(*v) {
 			return
@@ -146,18 +146,18 @@ func (v *Vec2) Set(vs ...float64) {
 }
 
 // Vec2 version of this vector.
-func (v *Vec2) Vec2() Vec2 {
+func (v *VecS) Vec2() Vec2 {
 	return NewVec2((*v)[:]...)
 }
 
 // Vec3 version of this vector.
-func (v *Vec2) Vec3() Vec3 {
+func (v *VecS) Vec3() Vec3 {
 	return NewVec3((*v)[:]...)
 }
 
 // Vec4 version of this vector.
-func (v *Vec2) Vec4() Vec4 {
+func (v *VecS) Vec4() Vec4 {
 	return NewVec4((*v)[:]...)
 }
 
-/* VECC_END */
+*/
