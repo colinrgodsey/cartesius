@@ -3,5 +3,5 @@ Library of mathematical components and algorithms for Go, targeting cartesian sy
 
 * Vectors - 2, 3, 4, and N dimensional vectors classes using float32 or float64.
 * Interpolation (float64)
-  * 2D Grid - Box, Linear, Hermite, MitchellNetravali, CatmullRom, BSpline, Gaussian, Lanczos, Hann, Hamming, Blackman, Bartlett, Welch, Cosine
-  * ND - Microsphere
+  * 2d Grid - Box, Linear, Hermite, MitchellNetravali, CatmullRom, BSpline, Gaussian, Lanczos, Hann, Hamming, Blackman, Bartlett, Welch, Cosine
+  * Nd - Microsphere
