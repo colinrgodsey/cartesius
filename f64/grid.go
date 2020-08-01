@@ -19,7 +19,7 @@ var (
 )
 
 // Grid2D creates a 2D grid-based interpolator using the provided filter.
-func Grid2D(samples []Sample2D, filter filters.GridFilter) Interpolator2D {
+func Grid2D(samples []Vec3, filter filters.GridFilter) Interpolator2D {
 	stride, offs, max, values, err := makeGrid2d(samples)
 	if err != nil {
 		return func(pos Vec2) (float64, error) {
@@ -72,13 +72,13 @@ func interp2d(values [][]float64, pos Vec2, filter filters.GridFilter) float64 {
 	return sum / weights
 }
 
-func makeGrid2d(samples []Sample2D) (stride, offs, max [2]float64, values [][]float64, err error) {
+func makeGrid2d(samples []Vec3) (stride, offs, max [2]float64, values [][]float64, err error) {
 	if len(samples) < 9 {
 		err = ErrNotEnough
 		return
 	}
 	for si, s := range samples {
-		for i, p := range s.Pos {
+		for i, p := range s[:2] {
 			if p > max[i] || si == 0 {
 				max[i] = p
 			}
@@ -90,7 +90,7 @@ func makeGrid2d(samples []Sample2D) (stride, offs, max [2]float64, values [][]fl
 
 	var num [2]int
 	for _, s := range samples {
-		for i, p := range s.Pos {
+		for i, p := range s[:2] {
 			if p-offs[i] == 0 {
 				num[i]++
 			}
@@ -111,11 +111,11 @@ func makeGrid2d(samples []Sample2D) (stride, offs, max [2]float64, values [][]fl
 	}
 	for _, s := range samples {
 		var idx [2]int
-		for i, p := range s.Pos {
+		for i, p := range s[:2] {
 			v := (p - offs[i]) / stride[i]
 			idx[i] = int(math.Round(v))
 		}
-		values[idx[1]][idx[0]] = s.Val
+		values[idx[1]][idx[0]] = s[2]
 	}
 	return
 }

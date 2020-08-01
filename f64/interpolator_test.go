@@ -24,12 +24,12 @@ func TestGrids(t *testing.T) {
 		maxRMS     = 0.065
 	)
 
-	var samples []Sample2D
+	var samples []Vec3
 	sVals := getTestGreyImage(testImage30)
 	vVals := getTestGreyImage(testImage100)
 	for y, ys := range sVals {
 		for x, v := range ys {
-			s := Sample2D{Vec2{(float64(x) + 0.5) * imgFac, (float64(y) + 0.5) * imgFac}, v}
+			s := Vec3{(float64(x) + 0.5) * imgFac, (float64(y) + 0.5) * imgFac, v}
 			samples = append(samples, s)
 		}
 	}
@@ -50,8 +50,8 @@ func TestGrids(t *testing.T) {
 	testInterp := func(interp Interpolator2D, filter interface{}) {
 		var sum, num float64
 		for sample := range interp.Multi(sampleChan()) {
-			valid := vVals[int(sample.Pos[1])][int(sample.Pos[0])]
-			e := valid - sample.Val
+			valid := vVals[int(sample[1])][int(sample[0])]
+			e := valid - sample[2]
 			sum += e * e
 			num++
 		}

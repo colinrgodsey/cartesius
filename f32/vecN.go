@@ -4,6 +4,13 @@ package f32
 
 var _ Vec = (*VecN)(nil)
 
+// NewVecN creates a new VecN from the provided values.
+func NewVecN(vs ...float32) VecN {
+	out := VecN{}
+	out.Set(vs...)
+	return out
+}
+
 // Add o to v
 func (v VecN) Add(o VecN) (res VecN) {
 	initVecN(&res, len(v))

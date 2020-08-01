@@ -19,21 +19,21 @@ func init() {
 	}
 }
 
-func microSphere2D(pos Vec2, samples []Sample2D) float64 {
+func microSphere2D(pos Vec2, samples []Vec3) float64 {
 	var facets [nFacets]struct {
 		w, sample float64
 	}
 	for _, sample := range samples {
 		for i := range facets {
-			Δp := pos.Sub(sample.Pos)
+			Δp := pos.Sub(NewVec2(sample[:]...))
 			Δ := Δp.Mag()
 			if Δ < ε {
-				return sample.Val
+				return sample[2]
 			}
 			w := math.Pow(Δ, -weightExp) * Δp.Unit().Dot(norms2D[i])
 			if w > facets[i].w {
 				facets[i].w = w
-				facets[i].sample = sample.Val
+				facets[i].sample = sample[2]
 			}
 		}
 	}
@@ -46,7 +46,7 @@ func microSphere2D(pos Vec2, samples []Sample2D) float64 {
 	return totalV / totalW
 }
 
-func MicroSphere2D(samples []Sample2D) Interpolator2D {
+func MicroSphere2D(samples []Vec3) Interpolator2D {
 	return func(pos Vec2) (float64, error) {
 		return microSphere2D(pos, samples), nil
 	}

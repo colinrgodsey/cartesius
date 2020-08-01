@@ -6,6 +6,13 @@ package f32
 
 var _ Vec = (*Vec2)(nil)
 
+// NewVec2 creates a new Vec2 from the provided values.
+func NewVec2(vs ...float32) Vec2 {
+	out := Vec2{}
+	out.Set(vs...)
+	return out
+}
+
 // Add o to v
 func (v Vec2) Add(o Vec2) (res Vec2) {
 	initVec2(&res, len(v))
