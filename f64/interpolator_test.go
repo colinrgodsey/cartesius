@@ -1,4 +1,4 @@
-package interpolation
+package f64
 
 import (
 	"bytes"
@@ -8,7 +8,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/colinrgodsey/cartesius/f64"
 	"github.com/colinrgodsey/cartesius/f64/filters"
 )
 
@@ -30,17 +29,17 @@ func TestGrids(t *testing.T) {
 	vVals := getTestGreyImage(testImage100)
 	for y, ys := range sVals {
 		for x, v := range ys {
-			s := Sample2D{f64.Vec2{(float64(x) + 0.5) * imgFac, (float64(y) + 0.5) * imgFac}, v}
+			s := Sample2D{Vec2{(float64(x) + 0.5) * imgFac, (float64(y) + 0.5) * imgFac}, v}
 			samples = append(samples, s)
 		}
 	}
 
-	sampleChan := func() <-chan f64.Vec2 {
-		positions := make(chan f64.Vec2, 32)
+	sampleChan := func() <-chan Vec2 {
+		positions := make(chan Vec2, 32)
 		go func() {
 			for x := 0; x < sampleSize; x++ {
 				for y := 0; y < sampleSize; y++ {
-					positions <- f64.Vec2{float64(x) + 0.5, float64(y) + 0.5}
+					positions <- Vec2{float64(x) + 0.5, float64(y) + 0.5}
 				}
 			}
 			close(positions)

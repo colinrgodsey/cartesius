@@ -1,10 +1,9 @@
-package interpolation
+package f64
 
 import (
 	"errors"
 	"math"
 
-	"github.com/colinrgodsey/cartesius/f64"
 	"github.com/colinrgodsey/cartesius/f64/filters"
 )
 
@@ -23,11 +22,11 @@ var (
 func Grid2D(samples []Sample2D, filter filters.GridFilter) Interpolator2D {
 	stride, offs, max, values, err := makeGrid2d(samples)
 	if err != nil {
-		return func(pos f64.Vec2) (float64, error) {
+		return func(pos Vec2) (float64, error) {
 			return 0, err
 		}
 	}
-	return func(pos f64.Vec2) (float64, error) {
+	return func(pos Vec2) (float64, error) {
 		var rPos [2]float64
 		for i, p := range pos {
 			if p < offs[i] || p > max[i] {
@@ -36,7 +35,7 @@ func Grid2D(samples []Sample2D, filter filters.GridFilter) Interpolator2D {
 			rPos[i] = (p - offs[i]) / stride[i]
 		}
 
-		v := interp2d(values, f64.Vec2{rPos[0], rPos[1]}, filter)
+		v := interp2d(values, Vec2{rPos[0], rPos[1]}, filter)
 		return v, nil
 	}
 }
@@ -58,7 +57,7 @@ func interp1d(values []float64, x float64, filter filters.GridFilter) float64 {
 }
 
 /* pos should already be offset and scaled */
-func interp2d(values [][]float64, pos f64.Vec2, filter filters.GridFilter) float64 {
+func interp2d(values [][]float64, pos Vec2, filter filters.GridFilter) float64 {
 	low, high := filterRange(pos[1], filter)
 
 	var weights, sum float64

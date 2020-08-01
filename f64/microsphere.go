@@ -1,9 +1,7 @@
-package interpolation
+package f64
 
 import (
 	"math"
-
-	"github.com/colinrgodsey/cartesius/f64"
 )
 
 const (
@@ -12,16 +10,16 @@ const (
 	weightExp = 2
 )
 
-var norms2D [nFacets]f64.Vec2
+var norms2D [nFacets]Vec2
 
 func init() {
 	for i := range norms2D {
 		Θ := float64(i) / nFacets * 2.0 * math.Pi
-		norms2D[i] = f64.Vec2{math.Cos(Θ), math.Sin(Θ)}
+		norms2D[i] = Vec2{math.Cos(Θ), math.Sin(Θ)}
 	}
 }
 
-func microSphere2D(pos f64.Vec2, samples []Sample2D) float64 {
+func microSphere2D(pos Vec2, samples []Sample2D) float64 {
 	var facets [nFacets]struct {
 		w, sample float64
 	}
@@ -49,7 +47,7 @@ func microSphere2D(pos f64.Vec2, samples []Sample2D) float64 {
 }
 
 func MicroSphere2D(samples []Sample2D) Interpolator2D {
-	return func(pos f64.Vec2) (float64, error) {
+	return func(pos Vec2) (float64, error) {
 		return microSphere2D(pos, samples), nil
 	}
 }
