@@ -137,12 +137,7 @@ func (v *VecS) Get() []float64 {
 // Set vector values
 func (v *VecS) Set(vs ...float64) {
 	initVecS(v, len(vs))
-	for i, val := range vs {
-		if i >= len(*v) {
-			return
-		}
-		(*v)[i] = val
-	}
+	copy((*v)[:], vs)
 }
 
 // Vec2 version of this vector.

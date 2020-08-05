@@ -137,12 +137,7 @@ func (v *Vec3) Get() []float64 {
 // Set vector values
 func (v *Vec3) Set(vs ...float64) {
 	initVec3(v, len(vs))
-	for i, val := range vs {
-		if i >= len(*v) {
-			return
-		}
-		(*v)[i] = val
-	}
+	copy((*v)[:], vs)
 }
 
 // Vec2 version of this vector.

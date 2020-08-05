@@ -5,7 +5,6 @@ import (
 )
 
 const (
-	ε         = 1e-8
 	nFacets   = 96
 	weightExp = 2
 )

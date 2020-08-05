@@ -38,4 +38,10 @@ func TestVec3(t *testing.T) {
 	if absfloat64(NewVec3(2, 2, 2, 2).Mul(100).Unit().Mag()-1.0) > 1e-6 {
 		t.Fatalf("unit mag failed")
 	}
+
+	zv := NewVec3()
+	zv.Set(1, 1, 1, 1)
+	if !zv.Eq(one) {
+		t.Fatalf("Set failed")
+	}
 }

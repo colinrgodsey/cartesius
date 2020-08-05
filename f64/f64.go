@@ -4,5 +4,7 @@ package f64
 
 import "math"
 
+const ε = 1e-8
+
 var absfloat64 = math.Abs
 var sqrtfloat64 = math.Sqrt

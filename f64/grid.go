@@ -18,6 +18,12 @@ var (
 	ErrNotEnough = errors.New("need to provide at least 9 samples")
 )
 
+const (
+	// MinGridSamples defines the minimum amount of samples for
+	// grid-based interpolation.
+	MinGridSamples = 9
+)
+
 // Grid2D creates a 2D grid-based interpolator using the provided filter.
 // The Z axis of the samples is the value that will be interpolated.
 func Grid2D(samples []Vec3, filter filters.GridFilter) Interpolator2D {
@@ -67,14 +73,14 @@ func interp2d(values [][]float64, pos Vec2, filter filters.GridFilter) float64 {
 			continue
 		}
 		w := filter.Kernel(pos[1] - float64(i))
-		weights += w
 		sum += interp1d(values[i], pos[0], filter) * w
+		weights += w
 	}
 	return sum / weights
 }
 
 func makeGrid2d(samples []Vec3) (stride, offs, max [2]float64, values [][]float64, err error) {
-	if len(samples) < 9 {
+	if len(samples) < MinGridSamples {
 		err = ErrNotEnough
 		return
 	}
