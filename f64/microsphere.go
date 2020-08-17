@@ -23,34 +23,39 @@ func microSphere2D(pos Vec2, samples []Vec3) float64 {
 		w, sample float64
 	}
 	for _, sample := range samples {
+		v := sample[2]
 		for i := range facets {
 			Δp := pos.Sub(sample.Vec2())
 			Δ := Δp.Mag()
 			if Δ < ε {
-				return sample[2]
+				return v
 			}
-			w := math.Pow(Δ, -weightExp) * Δp.Unit().Dot(norms2D[i])
+			w := math.Pow(Δ, -weightExp) * Δp.Dot(norms2D[i]) / Δ
 			if w > facets[i].w {
 				facets[i].w = w
-				facets[i].sample = sample[2]
+				facets[i].sample = v
 			}
 		}
 	}
 
-	var totalW, totalV float64
+	var w, v float64
 	for _, f := range facets {
-		totalW += f.w
-		totalV += f.sample * f.w
+		w += f.w
+		v += f.sample * f.w
 	}
-	return totalV / totalW
+	return v / w
 }
 
-// MicroSphere2D is a 2D interpolator that using microsphere
+// MicroSphere2D is a 2D interpolator that uses microsphere
 // projection to interpolate over non grid-aligned samples.
 // The Z axis of the samples is the value that will be interpolated.
 func MicroSphere2D(samples []Vec3) Interpolator2D {
-	return func(pos Vec2) (float64, error) {
-		return microSphere2D(pos, samples), nil
+	return func(pos Vec2) (v float64, err error) {
+		v = microSphere2D(pos, samples)
+		if math.IsNaN(v) {
+			err = ErrBadCoord
+		}
+		return
 	}
 }
 

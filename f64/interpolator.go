@@ -1,8 +1,20 @@
 package f64
 
 import (
+	"errors"
 	"runtime"
 	"sync"
+)
+
+var (
+	// ErrBadGrid is returned if the samples given don't form a grid
+	ErrBadGrid = errors.New("provided samples do not form a grid")
+
+	// ErrBadCoord is returned if you interpolate coords outside of the sample range
+	ErrBadCoord = errors.New("provided coordinate is outside of the sample range")
+
+	// ErrNotEnough is returned if less than 9 samples are provided
+	ErrNotEnough = errors.New("need to provide at least 9 samples")
 )
 
 // Interpolator2D is an interpolation method created using
@@ -37,4 +49,16 @@ func (interp Interpolator2D) Multi(positions <-chan Vec2) <-chan Vec3 {
 	}()
 
 	return c
+}
+
+// Fallback allows you to create a new interpolator that will use the
+// interpolation from next if the interpolation from interp fails.
+func (interp Interpolator2D) Fallback(next Interpolator2D) Interpolator2D {
+	return func(pos Vec2) (res float64, err error) {
+		res, err = interp(pos)
+		if err != nil {
+			res, err = next(pos)
+		}
+		return
+	}
 }
