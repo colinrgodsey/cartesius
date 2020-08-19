@@ -62,3 +62,18 @@ func (interp Function2D) Fallback(next Function2D) Function2D {
 		return
 	}
 }
+
+// Grid2DPositions returns a channel of 2d positions
+// across the defined grid.
+func Grid2DPositions(min, stride, max Vec2) <-chan Vec2 {
+	positions := make(chan Vec2, runtime.GOMAXPROCS(0)*2)
+	go func() {
+		for x := min[0]; x < max[0]; x += stride[0] {
+			for y := min[1]; y < max[1]; y += stride[1] {
+				positions <- Vec2{x, y}
+			}
+		}
+		close(positions)
+	}()
+	return positions
+}

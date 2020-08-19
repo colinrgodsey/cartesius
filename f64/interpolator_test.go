@@ -89,16 +89,10 @@ func testInterp(interpGen func([]Vec3) Function2D, filter interface{}, stride in
 	interp := interpGen(samples)
 
 	sampleChan := func(stride int) <-chan Vec2 {
-		positions := make(chan Vec2, 32)
-		go func() {
-			for x := 0; x < sampleSize; x += stride {
-				for y := 0; y < sampleSize; y += stride {
-					positions <- Vec2{float64(x) + 0.5, float64(y) + 0.5}
-				}
-			}
-			close(positions)
-		}()
-		return positions
+		one := Vec2{1, 1}
+		offs := one.Mul(0.5)
+		return Grid2DPositions(offs,
+			one.Mul(float64(stride)), one.Mul(sampleSize).Add(offs))
 	}
 
 	var sum, num float64
