@@ -8,7 +8,7 @@ import (
 
 // Grid2D creates a 2D grid-based interpolator using the provided filter.
 // The Z axis of a sample is the value that will be interpolated.
-func Grid2D(samples []Vec3, filter filters.GridFilter) (Interpolator2D, error) {
+func Grid2D(samples []Vec3, filter filters.GridFilter) (Function2D, error) {
 	stride, offs, max, vals, err := makeGrid2d(samples)
 	if err != nil {
 		return nil, err

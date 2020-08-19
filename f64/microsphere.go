@@ -49,7 +49,7 @@ func microSphere2D(pos Vec2, samples []Vec3) float64 {
 // MicroSphere2D is a 2D interpolator that uses microsphere
 // projection to interpolate over non grid-aligned samples.
 // The Z axis of the samples is the value that will be interpolated.
-func MicroSphere2D(samples []Vec3) Interpolator2D {
+func MicroSphere2D(samples []Vec3) Function2D {
 	return func(pos Vec2) (v float64, err error) {
 		v = microSphere2D(pos, samples)
 		if math.IsNaN(v) {

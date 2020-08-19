@@ -28,7 +28,7 @@ func TestGrids(t *testing.T) {
 		if fidx == 0 || fidx == 5 {
 			max = maxBadRMS
 		}
-		str := testInterp(func(samples []Vec3) Interpolator2D {
+		str := testInterp(func(samples []Vec3) Function2D {
 			x, _ := Grid2D(samples, filter)
 			return x
 		}, fidx, 1, max)
@@ -70,7 +70,7 @@ func TestMicrosphere(t *testing.T) {
 	}
 }
 
-func testInterp(interpGen func([]Vec3) Interpolator2D, filter interface{}, stride int, maxRMS float64) string {
+func testInterp(interpGen func([]Vec3) Function2D, filter interface{}, stride int, maxRMS float64) string {
 	const (
 		sampleSize = 100.0
 		imgFac     = 100.0 / 30.0
