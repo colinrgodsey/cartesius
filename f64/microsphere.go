@@ -53,6 +53,7 @@ func MicroSphere2D(samples []Vec3) Interpolator2D {
 	return func(pos Vec2) (v float64, err error) {
 		v = microSphere2D(pos, samples)
 		if math.IsNaN(v) {
+			v = 0
 			err = ErrBadCoord
 		}
 		return

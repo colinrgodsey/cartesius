@@ -19,16 +19,16 @@ var (
 
 // Interpolator2D is an interpolation method created using
 // a set of samples and an interpolation algorithm.
-type Interpolator2D func(pos Vec2) (float64, error)
+type Function2D func(pos Vec2) (float64, error)
 
 // Multi takes a channel of positions and returns a channel of results.
 // Ordering is not guaranteed, and the result channel will be closed
 // when all incoming positions have been processed. Only valid positions
 // will be returned on the channel.
-func (interp Interpolator2D) Multi(positions <-chan Vec2) <-chan Vec3 {
+func (interp Function2D) Multi(positions <-chan Vec2) <-chan Vec3 {
 	var wg sync.WaitGroup
 	procs := runtime.GOMAXPROCS(0)
-	c := make(chan Vec3, procs*5)
+	c := make(chan Vec3, procs*4)
 
 	wg.Add(procs)
 	for i := 0; i < procs; i++ {
@@ -53,7 +53,7 @@ func (interp Interpolator2D) Multi(positions <-chan Vec2) <-chan Vec3 {
 
 // Fallback allows you to create a new interpolator that will use the
 // interpolation from next if the interpolation from interp fails.
-func (interp Interpolator2D) Fallback(next Interpolator2D) Interpolator2D {
+func (interp Function2D) Fallback(next Function2D) Function2D {
 	return func(pos Vec2) (res float64, err error) {
 		res, err = interp(pos)
 		if err != nil {

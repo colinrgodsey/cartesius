@@ -24,6 +24,7 @@ func Grid2D(samples []Vec3, filter filters.GridFilter) (Interpolator2D, error) {
 		}
 		v = interp2d(vals, Vec2{rPos[0], rPos[1]}, filter)
 		if math.IsNaN(v) {
+			v = 0
 			err = ErrBadCoord
 		}
 		return
